@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Device Tree fragment for HVMPD
+ *
+ * Copyright 2024 Hugo Villeneuve
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&gpio>;
+		__overlay__ {
+			lcd_pins: lcd_pins {
+				brcm,pins = <26 13 6 5 27 17>;
+				brcm,function = <1>; /* out */
+			};
+		};
+	};
+
+	fragment@1 {
+                target-path = "/";
+		__overlay__ {
+			lcd {
+				compatible = "hit,hd44780";
+				pinctrl-names = "default";
+				pinctrl-0 = <&lcd_pins>;
+				display-height-chars = <2>;
+				display-width-chars = <40>;
+				data-gpios = <&gpio 26 GPIO_ACTIVE_HIGH>, /* D4 */
+					     <&gpio 13 GPIO_ACTIVE_HIGH>, /* D5 */
+					     <&gpio  6 GPIO_ACTIVE_HIGH>, /* D6 */
+					     <&gpio  5 GPIO_ACTIVE_HIGH>; /* D7 */
+				enable-gpios = <&gpio 27 GPIO_ACTIVE_HIGH>;
+				rs-gpios = <&gpio 17 GPIO_ACTIVE_HIGH>;
+			};
+		};
+	};
+};
