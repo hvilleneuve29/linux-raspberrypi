@@ -8,6 +8,8 @@
 /dts-v1/;
 /plugin/;
 
+#include <dt-bindings/gpio/gpio.h>
+
 / {
 	compatible = "brcm,bcm2835";
 
@@ -16,6 +18,11 @@
 		__overlay__ {
 			lcd_pins: lcd_pins {
 				brcm,pins = <26 13 6 5 27 17>;
+				brcm,function = <1>; /* out */
+			};
+
+			led_pins: led_pins {
+				brcm,pins = <25>;
 				brcm,function = <1>; /* out */
 			};
 		};
@@ -39,4 +46,19 @@
 			};
 		};
 	};
+
+	fragment@2 {
+		target = <&leds>;
+		__overlay__ {
+			compatible = "gpio-leds";
+			pinctrl-names = "default";
+			pinctrl-0 = <&led_pins>;
+
+			status_led: status_led {
+                                label = "status";
+                                linux,default-trigger = "default-off";
+                                gpios = <&gpio 25 GPIO_ACTIVE_LOW>;
+                        };
+                };
+        };
 };
